@@ -5,67 +5,137 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    {# .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; } #}
+
+td{
+border: 1px solid black;
+
+
+
+}
+th{
+    text-align:center;
+    
+}
+.headTableau {
+    border: solid 3px black;
+}
+
+.headTableau td{
+    font-weight:bold; 
+}
+
+.headTableau th{
+    vertical-align: middle;
+}
+.donneeClient span{
+ text-align:left;
+ padding: 10px;
+ font-weight:bold
+
+}
+
+.adresseLivraison{
+    text-align:center !important;
+    font-size:;
+}
 </style>
+
 
 <div class="example-wrapper" >
     <h1 class="text-center t-3"> Commandes </h1>
 
- <div class="container-fluid" style="width:100%;">   
+    <div class="container-fluid" style="width:100%;">   
 
-<style>
-td{
-border: 1px solid black;
-width: 100px;
-text-align:center;
+        <div class=".table-responsive-sm">
 
-}
-.headTableau td{
-    font-weight:bold;
-}
+            <table  class="table table-striped">  
 
-</style>
+            <thead>
+                <tr class="headTableau" >
+                    <th class="table-warning">N° Client</th>
+                    <th class="table-warning">Nom de Société</th>
+                    <th class="table-warning">N° Commande</th>
+                    <th class="table-warning">Total HT</th>
+                    <th class="table-warning">Montant TVA</th>
+                    <th class="table-warning">Frais de Livraison</th>
+                    <th class="table-warning">Total TTC</th>
+                    <th class="table-warning">N° Facture</th>
+                    <th class="table-warning">Télécharger facture</th>
+                </tr>
+                {# boubcle #}
+                {# {% for client in clients %} #}
+            
+            </thead>
 
+                    <tbody > 
+                        
+                        <tr class="cachComm">
+                            <td style="width:5%"><span  style="padding:10px; margin-right: 10px;margin-left:0px;">▼</span>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>   
+                            <td>client.Numero</td>        
+                        </tr> 
+                       
+                        <tr class="d-none blocCommHidden">
+                            <td colspan="4" class="donneeClient">
+                                <span>Nom:</span><br>
+                                <span>Prénom:</span><br>
+                                <span>Email:</span><br>
+                                <span>Téléphone:</span><br>
+                                <span>Société</span><br>
+                                <br>
+                                <span class="adresseLivraison">ADRESSE DE LIVRAISON</span><br> 
+                                <span>Code Postal</span><br>      
+                                <span>Ville</span><br>     
+                                
+                            </td>                    
+                        
+                            <td colspan="5"  class="donneeClient"> 
+                        
+                                <span>Produit</span><br> 
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>               
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>      
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>     
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                <span>Produit</span><br>   
+                                
+                        </tr>  
+                    </tbody>
+                    
+                
+                {# {% endfor %} #}
 
-<table >  
-<thead>Tableau</thead>
-    <tr class="headTableau">
-        <td>N° Client</td>
-        <td>Nom de Société</td>
-        <td>N° Commande</td>
-        <td>Total HT</td>
-        <td>Montant TVA</td>
-        <td>Frais de Livraison</td>
-        <td>Total TTC</td>
-        <td>N° Facture</td>
-        <td>Télécharger facture</td>
-    </tr>
-    {# boubcle #}
-    {# {% for client in clients %} #}
-    <tr>
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>   
-        <td>client.Numero</td>        
-    </tr>   
-     <tr style="width:100%">
-        <td>Données client</td>   
-        <td>Produit Client</td>        
-    </tr>   
-    {# {% endfor %} #}
+            
+            </table>
+        </div>
 
-   
-</table>
+<a class="b">test</a>
 
-
-
-</div>
+    </div>
 
     {{ form_start(form ) }}       
         {{ form_widget(form) }}    
@@ -77,25 +147,28 @@ text-align:center;
 
 {% endblock %}
 
-{% block scripts %}
-      <script src="{{ asset('assets/script/MyJS.js') }}">
-            
-            function onClickBtnComm() {
-        const  section = $(this).parent();
-        const  div = section.find('div.blocCommHidden');
-            var substring = 'd-none'
-            if (div.attr('class').indexOf(substring) !== -1) {
-                div.removeClass('d-none');
-            } else {
-                div.addClass('d-none');
-            } 
+{% block javascripts %}
+<script>
+function onClickBtnComm() {
+    console.log("mon cul");
 
-        };
+    const  section = $(this).parent();
+    
+    console.log(section.attr('class'))
+    
+    const  div = section.find('tr.blocCommHidden');
+    var substring = 'd-none';
+    if (div.attr('class').indexOf(substring) !== -1) {
+        div.removeClass('d-none');
+        } else {
+            div.addClass('d-none');
+        } 
 
-        document.querySelectorAll('a.cachComm').forEach(function (link) {
-            link.addEventListener('click', onClickBtnComm);
-        });
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js%22%3E</script>
-      </script>
+    };
+$(document).ready(function(){
+      document.querySelectorAll('tr.cachComm').forEach(function (link) {
+        link.addEventListener('click', onClickBtnComm);
+    });})
+   </script>  
       
 {% endblock %}
