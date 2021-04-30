@@ -9,10 +9,65 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-<div class="example-wrapper">
+<div class="example-wrapper" >
     <h1 class="text-center t-3"> Commandes </h1>
-    {{ form_start(form ) }}
-       
+
+ <div class="container-fluid" style="width:100%;">   
+
+<style>
+td{
+border: 1px solid black;
+width: 100px;
+text-align:center;
+
+}
+.headTableau td{
+    font-weight:bold;
+}
+
+</style>
+
+
+<table >  
+<thead>Tableau</thead>
+    <tr class="headTableau">
+        <td>N° Client</td>
+        <td>Nom de Société</td>
+        <td>N° Commande</td>
+        <td>Total HT</td>
+        <td>Montant TVA</td>
+        <td>Frais de Livraison</td>
+        <td>Total TTC</td>
+        <td>N° Facture</td>
+        <td>Télécharger facture</td>
+    </tr>
+    {# boubcle #}
+    {# {% for client in clients %} #}
+    <tr>
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>   
+        <td>client.Numero</td>        
+    </tr>   
+     <tr style="width:100%">
+        <td>Données client</td>   
+        <td>Produit Client</td>        
+    </tr>   
+    {# {% endfor %} #}
+
+   
+</table>
+
+
+
+</div>
+
+    {{ form_start(form ) }}       
         {{ form_widget(form) }}    
     {{ form_end(form ) }}
 </div>
@@ -20,4 +75,27 @@
 
 
 
+{% endblock %}
+
+{% block scripts %}
+      <script src="{{ asset('assets/script/MyJS.js') }}">
+            
+            function onClickBtnComm() {
+        const  section = $(this).parent();
+        const  div = section.find('div.blocCommHidden');
+            var substring = 'd-none'
+            if (div.attr('class').indexOf(substring) !== -1) {
+                div.removeClass('d-none');
+            } else {
+                div.addClass('d-none');
+            } 
+
+        };
+
+        document.querySelectorAll('a.cachComm').forEach(function (link) {
+            link.addEventListener('click', onClickBtnComm);
+        });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js%22%3E</script>
+      </script>
+      
 {% endblock %}
