@@ -52,48 +52,79 @@ class CommandeController extends AbstractController
                     
                     $repoClient = $this->getDoctrine()->getRepository(Client::class);
                     $client = $repoClient->findBy(array('Numero' => $numClient));
-                    dump($numClient);
+                    dump($client);
+                    $manager = $this->getDoctrine()->getManager();
+
+
                     if (!$commande) {
                         $commande = new Commande;
                     }
+
+
                     if (!$client) {
                         $client = new Client;
+                        $email = strval($xmlObject->Order->User->Email);
+                        $client->setEmail($email);
+                        $numClient= intval($xmlObject->Order->User['UserId']);
+                        $client->setNumero($numClient);
+                        $client->setNom($xmlObject->Order->User->LastName);
+                        $client->setPrenom($xmlObject->Order->User->FirstName);
+                        $telephone= intval($xmlObject->Order->User->Phone);
+                        $client->setTelephone($telephone);
+                        $client->setSociete($xmlObject->Order->User->Company);
+                        $manager->persist($client);
+                        $manager->flush();
+                        $commande->setClient($client);
+                    }else{
+                        $commande->setClient($client[0]);
                     }
                     
                     if (!$produitCommande) {
                         $produitCommande = new ProduitCommande;
                     }
-                    $client->setEmail($xmlObject->Order->User->Email);
-                    $client->setNumero($xmlObject->Order->User['UserId']);
-                    $client->setNom($xmlObject->Order->User->LastName);
-                    $client->setPrenom($xmlObject->Order->User->FirstName);
-                    $client->setTelephone($xmlObject->Order->User->Phone);
-                    $client->setSociete($xmlObject->Order->User->Company);
-                    $manager = $this->getDoctrine()->getManager();
-                    $manager->persist($client);
-                    $manager->flush();
+                    
 
-                    $commande->setNumero($xmlObject->Order['DisplayOrderId']);
-                    $commande->setClient($client);
+                    $numCommande = intval($xmlObject->Order['DisplayOrderId']);
+                    $commande->setNumero($numCommande);
+                   
                     $commande->setAdresseLivraison($xmlObject->Order->BillingAddress->Address1." ". $xmlObject->Order->BillingAddress->Address2 );
                     $commande->setVilleLivraison($xmlObject->Order->BillingAddress->City);
                     $commande->setCodePostalLivraison($xmlObject->Order->BillingAddress->ZipCode);
-                    
+                    $Subtotal = intval($xmlObject->Order->Prices->Subtotal);
+                    $commande->setTotalHT($Subtotal);
+                    $Tax = intval($xmlObject->Order->Prices->Tax);
+                    $commande->setTVA($Tax);
+                    $TotalPrice = intval($xmlObject->Order->Prices->TotalPrice);
+                    $commande->setTotalTTC($TotalPrice);
+                    $shipping = intval($xmlObject->Order->Prices->ShippingPrice);
+                    $mailingPrice = intval($xmlObject->Order->Prices->MailingPrice);
+                    $totalShipping = $shipping + $mailingPrice;
+                    $commande->setLivraison($totalShipping);
+                    $date = substr($xmlObject->Order['CreationDate'], 0,-13);
+                    $heure = substr($xmlObject->Order['CreationDate'], 11,-4);
+                    $newDateTime = New \DateTime($date.' '.$heure);
+                    $commande->setDate($newDateTime);
+                    $manager->persist($commande);
+                    $manager->flush();
 
                     foreach ($xmlObject->Order->OrderProducts->OrderProduct as $OrderProduct) {
-                        $numProduit = $OrderProduct->Product['id'];
+
+                        $numProduit = intval($OrderProduct->Product['id']);
                         $repoProduit = $this->getDoctrine()->getRepository(Produit::class);
                         $produit = $repoProduit->findBy(array('Numero' => $numProduit));
 
                         if (!$produit) {
                             $produit = new Produit;
+                            $produit->setNumero($numProduit);
+                            $produit->setNom( $OrderProduct->Product->Name);
+                            $CatalogNumber = intval($OrderProduct->Product->CatalogNumber);
+                            $produit->setCategorie($CatalogNumber);
+                            $produit->setManufactureur($OrderProduct->Product->Manufacturer->Name);
+                            $manager->persist($produit);
+                            $manager->flush();
                         }
-                        $produit->setNumero($numProduit);
-                        $produit->setNom( $OrderProduct->Product->Name);
-                        $produit->setCategorie($OrderProduct->Product->CatalogNumber);
-                        $produit->setManufactureur($OrderProduct->Product->Manufacturer->Name);
-                        $manager->persist($produit);
-                        $manager->flush();
+                        
+                       
                     }
                 }
             //}
