@@ -39,6 +39,11 @@ class Produit
      */
     private $produitCommandes;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $Categorie;
+
     public function __construct()
     {
         $this->produitCommandes = new ArrayCollection();
@@ -111,6 +116,18 @@ class Produit
                 $produitCommande->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategorie(): ?int
+    {
+        return $this->Categorie;
+    }
+
+    public function setCategorie(?int $Categorie): self
+    {
+        $this->Categorie = $Categorie;
 
         return $this;
     }

@@ -49,6 +49,7 @@ class CommandeController extends AbstractController
                     /* @var $file \Symfony\Component\Finder\SplFileInfo */
                     $xmlObject  = simplexml_load_file($file);
                     $numClient = $xmlObject->Order->User['UserId'];
+                    
                     $repoClient = $this->getDoctrine()->getRepository(Client::class);
                     $client = $repoClient->findBy(array('Numero' => $numClient));
                     dump($numClient);
@@ -58,21 +59,46 @@ class CommandeController extends AbstractController
                     if (!$client) {
                         $client = new Client;
                     }
-                    if (!$produit) {
-                        $produit = new Produit;
-                    }
+                    
                     if (!$produitCommande) {
                         $produitCommande = new ProduitCommande;
                     }
+                    $client->setEmail($xmlObject->Order->User->Email);
+                    $client->setNumero($xmlObject->Order->User['UserId']);
+                    $client->setNom($xmlObject->Order->User->LastName);
+                    $client->setPrenom($xmlObject->Order->User->FirstName);
+                    $client->setTelephone($xmlObject->Order->User->Phone);
+                    $client->setSociete($xmlObject->Order->User->Company);
+                    $manager = $this->getDoctrine()->getManager();
+                    $manager->persist($client);
+                    $manager->flush();
 
-
+                    $commande->setNumero($xmlObject->Order['DisplayOrderId']);
+                    $commande->setClient($client);
+                    $commande->setAdresseLivraison($xmlObject->Order->BillingAddress->Address1." ". $xmlObject->Order->BillingAddress->Address2 );
+                    $commande->setVilleLivraison($xmlObject->Order->BillingAddress->City);
+                    $commande->setCodePostalLivraison($xmlObject->Order->BillingAddress->ZipCode);
                     
+
+                    foreach ($xmlObject->Order->OrderProducts->OrderProduct as $OrderProduct) {
+                        $numProduit = $OrderProduct->Product['id'];
+                        $repoProduit = $this->getDoctrine()->getRepository(Produit::class);
+                        $produit = $repoProduit->findBy(array('Numero' => $numProduit));
+
+                        if (!$produit) {
+                            $produit = new Produit;
+                        }
+                        $produit->setNumero($numProduit);
+                        $produit->setNom( $OrderProduct->Product->Name);
+                        $produit->setCategorie($OrderProduct->Product->CatalogNumber);
+                        $produit->setManufactureur($OrderProduct->Product->Manufacturer->Name);
+                        $manager->persist($produit);
+                        $manager->flush();
+                    }
                 }
             //}
 
-            // $manager = $this->getDoctrine()->getManager();
-            // $manager->persist($commande);
-            // $manager->flush();
+           
           //  return $this->redirectToRoute('commande');
         //}
 
