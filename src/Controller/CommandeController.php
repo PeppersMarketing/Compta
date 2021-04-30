@@ -51,14 +51,14 @@ class CommandeController extends AbstractController
                     $numClient = $xmlObject->Order->User['UserId'];
                     
                     $repoClient = $this->getDoctrine()->getRepository(Client::class);
-                    $client = $repoClient->findBy(array('Numero' => $numClient));
+                    $client = $repoClient->findOneBy(array('Numero' => $numClient));
                     dump($client);
                     $manager = $this->getDoctrine()->getManager();
+                    $repoCommande = $this->getDoctrine()->getRepository(Commande::class);
+                    $numCommande = intval($xmlObject->Order['DisplayOrderId']);
+                    $commande = $repoCommande->findOneBy(array('Numero' => $numCommande));
 
-
-                    if (!$commande) {
-                        $commande = new Commande;
-                    }
+                    
 
 
                     if (!$client) {
@@ -74,44 +74,39 @@ class CommandeController extends AbstractController
                         $client->setSociete($xmlObject->Order->User->Company);
                         $manager->persist($client);
                         $manager->flush();
-                        $commande->setClient($client);
-                    }else{
-                        $commande->setClient($client[0]);
+                        
                     }
-                    
-                    if (!$produitCommande) {
-                        $produitCommande = new ProduitCommande;
-                    }
-                    
 
-                    $numCommande = intval($xmlObject->Order['DisplayOrderId']);
-                    $commande->setNumero($numCommande);
-                   
-                    $commande->setAdresseLivraison($xmlObject->Order->BillingAddress->Address1." ". $xmlObject->Order->BillingAddress->Address2 );
-                    $commande->setVilleLivraison($xmlObject->Order->BillingAddress->City);
-                    $commande->setCodePostalLivraison($xmlObject->Order->BillingAddress->ZipCode);
-                    $Subtotal = intval($xmlObject->Order->Prices->Subtotal);
-                    $commande->setTotalHT($Subtotal);
-                    $Tax = intval($xmlObject->Order->Prices->Tax);
-                    $commande->setTVA($Tax);
-                    $TotalPrice = intval($xmlObject->Order->Prices->TotalPrice);
-                    $commande->setTotalTTC($TotalPrice);
-                    $shipping = intval($xmlObject->Order->Prices->ShippingPrice);
-                    $mailingPrice = intval($xmlObject->Order->Prices->MailingPrice);
-                    $totalShipping = $shipping + $mailingPrice;
-                    $commande->setLivraison($totalShipping);
-                    $date = substr($xmlObject->Order['CreationDate'], 0,-13);
-                    $heure = substr($xmlObject->Order['CreationDate'], 11,-4);
-                    $newDateTime = New \DateTime($date.' '.$heure);
-                    $commande->setDate($newDateTime);
-                    $manager->persist($commande);
-                    $manager->flush();
+                    if (!$commande) {
+                        $commande = new Commande;
+                        $commande->setNumero($numCommande);
+                        $commande->setAdresseLivraison($xmlObject->Order->BillingAddress->Address1." ". $xmlObject->Order->BillingAddress->Address2 );
+                        $commande->setVilleLivraison($xmlObject->Order->BillingAddress->City);
+                        $commande->setCodePostalLivraison($xmlObject->Order->BillingAddress->ZipCode);
+                        $Subtotal = intval($xmlObject->Order->Prices->Subtotal);
+                        $commande->setTotalHT($Subtotal);
+                        $Tax = intval($xmlObject->Order->Prices->Tax);
+                        $commande->setTVA($Tax);
+                        $TotalPrice = intval($xmlObject->Order->Prices->TotalPrice);
+                        $commande->setTotalTTC($TotalPrice);
+                        $shipping = intval($xmlObject->Order->Prices->ShippingPrice);
+                        $mailingPrice = intval($xmlObject->Order->Prices->MailingPrice);
+                        $totalShipping = $shipping + $mailingPrice;
+                        $commande->setLivraison($totalShipping);
+                        $date = substr($xmlObject->Order['CreationDate'], 0,-13);
+                        $heure = substr($xmlObject->Order['CreationDate'], 11,-4);
+                        $newDateTime = New \DateTime($date.' '.$heure);
+                        $commande->setDate($newDateTime);
+                        $commande->setClient($client);
+                        $manager->persist($commande);
+                        $manager->flush();
+                    }
 
                     foreach ($xmlObject->Order->OrderProducts->OrderProduct as $OrderProduct) {
 
                         $numProduit = intval($OrderProduct->Product['id']);
                         $repoProduit = $this->getDoctrine()->getRepository(Produit::class);
-                        $produit = $repoProduit->findBy(array('Numero' => $numProduit));
+                        $produit = $repoProduit->findOneBy(array('Numero' => $numProduit));
 
                         if (!$produit) {
                             $produit = new Produit;
@@ -124,6 +119,22 @@ class CommandeController extends AbstractController
                             $manager->flush();
                         }
                         
+                        $repoProduitCommande = $this->getDoctrine()->getRepository(ProduitCommande::class);
+                        $produitCommande = $repoProduitCommande->findOneBy(array('Commande' => $commande,'Produit'=>$produit));
+                        if (!$produitCommande) {
+                            $produitCommande = new ProduitCommande;
+                        }
+
+                        $produitCommande->setCommande($commande);
+                        $produitCommande->setProduit($produit);
+                        $quantite = intval($OrderProduct->Quantities->TotalUnits);
+                        $produitCommande->setQuantite($quantite);
+                        $prixProduit = intval($OrderProduct->Prices->TotalPrice);
+                        $produitCommande->setPrixProduit($prixProduit);
+                        $coutProduit = intval($OrderProduct->Prices->Cost);
+                        $produitCommande->setCoutProduit($coutProduit);
+                        $manager->persist($produitCommande);
+                        $manager->flush();
                        
                     }
                 }
@@ -132,9 +143,9 @@ class CommandeController extends AbstractController
            
           //  return $this->redirectToRoute('commande');
         //}
-
+        $commandes = $repoCommande->findAll();
         return $this->render('commande/affichage.html.twig', [
-            'client' => $numClient,
+            'commandes' => $commandes,
             'form' => $form->createView()
         ]);
     }
