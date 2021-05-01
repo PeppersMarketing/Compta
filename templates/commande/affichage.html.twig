@@ -65,31 +65,31 @@ th{
                     <th class="table-warning">Télécharger facture</th>
                 </tr>
                 {# boubcle #}
-                {# {% for client in clients %} #}
+                 {% for commande in commandes %}
             
             </thead>
 
                     <tbody > 
                         
                         <tr class="cachComm">
-                            <td style="width:5%"><span  style="padding:10px; margin-right: 10px;margin-left:0px;">▼</span>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>   
-                            <td>client.Numero</td>        
+                            <td style="width:5%"><span  style="padding:10px; margin-right: 10px;margin-left:0px;" id="flecheAvant">▼</span>client.Numero</td>   
+                            <td>{{ commande.Client.Numero }}</td>   
+                            <td>{{ commande.Numero }}</td>   
+                            <td>{{ commande.TotalHT}}</td>   
+                            <td>{{ commande.TVA }}</td>   
+                            <td>{{ commande.Livraison }}</td>   
+                            <td>{{ commande.TotalTTC }}</td>   
+                            <td>{{ commande.Client.Numero }}</td>   
+                            <td>{{ commande.Client.Numero }}</td>        
                         </tr> 
                        
                         <tr class="d-none blocCommHidden">
                             <td colspan="4" class="donneeClient">
-                                <span>Nom:</span><br>
-                                <span>Prénom:</span><br>
-                                <span>Email:</span><br>
-                                <span>Téléphone:</span><br>
-                                <span>Société</span><br>
+                                <span>Nom:</span>{{ commande.Client.Nom }}<br>
+                                <span>Prénom:</span>{{ commande.Client.Prenom }}<br>
+                                <span>Email:</span>{{ commande.Client.Email }}<br>
+                                <span>Téléphone:</span>{{ commande.Client.Telephone }}<br>
+                                <span>Société</span>{{ commande.Client.Societe }}<br>
                                 <br>
                                 <span class="adresseLivraison">ADRESSE DE LIVRAISON</span><br> 
                                 <span>Code Postal</span><br>      
@@ -98,42 +98,22 @@ th{
                             </td>                    
                         
                             <td colspan="5"  class="donneeClient"> 
-                        
-                                <span>Produit</span><br> 
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>               
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>      
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>     
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                <span>Produit</span><br>   
-                                
+                            {# {% for commande in commande.produitCommandes %}
+                                <span>{{ commande.produitCommandes.Produit }}</span><br> 
+                                <span>{{ commande.PrixProduit }}</span><br> 
+                                <span>{{ commande.Quantite }}</span><br> 
+                                  
+                            {% endfor %} #}
+                          
                         </tr>  
                     </tbody>
                     
                 
-                {# {% endfor %} #}
+                {% endfor %}
 
             
             </table>
         </div>
-
-<a class="b">test</a>
 
     </div>
 
@@ -160,8 +140,10 @@ function onClickBtnComm() {
     var substring = 'd-none';
     if (div.attr('class').indexOf(substring) !== -1) {
         div.removeClass('d-none');
+        
         } else {
             div.addClass('d-none');
+        document.getElementById("flecheAvant").innerHTML = "►"
         } 
 
     };
