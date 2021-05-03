@@ -140,7 +140,7 @@ function onClickBtnComm() {
     var substring = 'd-none';
     if (div.attr('class').indexOf(substring) !== -1) {
         div.removeClass('d-none');
-        
+        document.getElementById("flecheAvant").innerHTML = "▼"
         } else {
             div.addClass('d-none');
         document.getElementById("flecheAvant").innerHTML = "►"
