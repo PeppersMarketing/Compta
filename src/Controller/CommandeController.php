@@ -135,6 +135,7 @@ class CommandeController extends AbstractController
                         $produitCommande->setCoutProduit($coutProduit);
                         $manager->persist($produitCommande);
                         $manager->flush();
+                        
                        
                     }
                 }
@@ -143,6 +144,7 @@ class CommandeController extends AbstractController
            
           //  return $this->redirectToRoute('commande');
         //}
+        dump($commande);
         $commandes = $repoCommande->findAll();
         return $this->render('commande/affichage.html.twig', [
             'commandes' => $commandes,

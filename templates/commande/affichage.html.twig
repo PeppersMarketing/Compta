@@ -75,10 +75,10 @@ th{
                             <td style="width:5%"><span  style="padding:10px; margin-right: 10px;margin-left:0px;" id="flecheAvant">▼</span>client.Numero</td>   
                             <td>{{ commande.Client.Numero }}</td>   
                             <td>{{ commande.Numero }}</td>   
-                            <td>{{ commande.TotalHT}}</td>   
-                            <td>{{ commande.TVA }}</td>   
-                            <td>{{ commande.Livraison }}</td>   
-                            <td>{{ commande.TotalTTC }}</td>   
+                            <td>{{ commande.TotalHT |number_format(2)}}</td>   
+                            <td>{{ commande.TVA |number_format(2)}}</td>   
+                            <td>{{ commande.Livraison |number_format(2)}}</td>   
+                            <td>{{ commande.TotalTTC |number_format(2)}}</td>   
                             <td>{{ commande.Client.Numero }}</td>   
                             <td>{{ commande.Client.Numero }}</td>        
                         </tr> 
@@ -98,12 +98,12 @@ th{
                             </td>                    
                         
                             <td colspan="5"  class="donneeClient"> 
-                            {# {% for commande in commande.produitCommandes %}
-                                <span>{{ commande.produitCommandes.Produit }}</span><br> 
-                                <span>{{ commande.PrixProduit }}</span><br> 
-                                <span>{{ commande.Quantite }}</span><br> 
+                            {% for produitCommande in commande.produitCommandes %}
+                                <span>Produit: {{ produitCommande.Produit.Nom }}</span><br> 
+                                <span>Quantité: {{ produitCommande.Quantite }}</span><br> 
+                                <span>Prix payé: {{ produitCommande.PrixProduit |number_format(2) }} €</span><br> 
                                   
-                            {% endfor %} #}
+                            {% endfor %}
                           
                         </tr>  
                     </tbody>
@@ -140,7 +140,7 @@ function onClickBtnComm() {
     var substring = 'd-none';
     if (div.attr('class').indexOf(substring) !== -1) {
         div.removeClass('d-none');
-        document.getElementById("flecheAvant").innerHTML = "▼"
+        
         } else {
             div.addClass('d-none');
         document.getElementById("flecheAvant").innerHTML = "►"

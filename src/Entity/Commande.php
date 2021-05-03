@@ -71,7 +71,7 @@ class Commande
     private $Date;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProduitCommande::class, mappedBy="Commande", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ProduitCommande", mappedBy="Commande", orphanRemoval=true)
      */
     private $produitCommandes;
 
